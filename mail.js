@@ -13,10 +13,9 @@ var transporter = nodemailer.createTransport({
 
 // setup e-mail data, even with unicode symbols
 module.exports.mailOptions = {
-    // from: 'Admin@adp.com', // sender address (who sends)
-    to: 'billakoori.ashok@adp.com', // list of receivers (who receives)
+    from: 'abcd@adp.com', // sender address (who sends)
+    to: 'rajeshwar.akella@adp.com', // list of receivers (who receives)
     subject: 'Form for Custom Majors Request ', // Subject line
-    html: 'This is the first email sent with Nodemailer in Node.js' // html body
 };
 
 
