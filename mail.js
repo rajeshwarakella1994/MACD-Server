@@ -21,12 +21,15 @@ module.exports.mailOptions = {
 
 // send mail with defined transport object
 module.exports.sendMail = (mailOptions) => {
-    console.log("Sending...", mailOptions);
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            return console.log(error);
-        }
-
-        console.log('Message sent: ' + info.response);
+    // console.log("Sending...", mailOptions);
+    console.log("Sending mail ...");
+    return new Promise((resolve, reject)=>{
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                reject(error);
+                return;
+            }
+            resolve('Message sent: ' + info.response)
+        })    
     })
 }

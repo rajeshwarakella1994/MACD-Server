@@ -2,24 +2,38 @@ const PORT = 8888;
 
 const {mailOptions, sendMail} = require("./mail");
 var express = require('express');
-var bodyParser = require('body-parser')
+const multer = require("multer");
+const fs = require("fs");
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/')
+    },
+    // filename: function (req, file, cb) {
+    //   cb(null, file.originalname)
+    // }
+  })
+  const upload = multer({storage: storage})
 
 var cors = require('cors');
-var app = express();
+var app = express();    
 
 app.use(cors());
 
-app.use(bodyParser.json())
+// app.use(bodyParser.json())
 
 app.get('/', function(req, res){
    res.send("Hello world!");
 });
 app.get("/kishore", (req, res)=>res.send({greet: "Hello Kishore"}));
-app.post("/apirequest", (req, res)=>{
+app.post("/apirequest", upload.array("files"), (req, res)=>{
     console.log(req.body);
+    console.log(req.files);
     const body = req.body;
+    const files = req.files;
     sendMail({
         ...mailOptions,
+        cc: `${body.contact_email}`,
+        attachments: files.map(file=>({filename: file.originalname, path: file.path})),
         subject: `Custom Majors Request for ${body.company_name}`, // Subject line
         html: ` <head>
                 <style>
@@ -82,12 +96,20 @@ app.post("/apirequest", (req, res)=>{
                     <td>${body.program_type1}</td>
                 </tr>
                 <tr>
+                    <td>Program to Modify</td>
+                    <td>${body.program_type2}</td>
+                </tr>
+                <tr>
+                    <td>Other</td>
+                    <td>${body.program_type3}</td>
+                </tr>
+                <tr>
                     <td>Company with ADP</td>
                     <td>${body.Company_with_ADP}</td>
                 </tr>
                 <tr>
                     <td>Client Processing Setup</td>
-                    <td>${body.prog_type}</td>
+                    <td>${body.processing}</td>
                 </tr>
                 <tr>
                     <td>PLD Company</td>
@@ -157,8 +179,15 @@ app.post("/apirequest", (req, res)=>{
                 </table>
                 </body>
                `
+    }).then(d=>{
+        files.forEach(file=>fs.unlinkSync(file.path));
+        res.send({msg: "Successfully sent mail"});
+        console.log("Successfully sent mail");
+    }).catch(e=>{
+        files.forEach(file=>fs.unlinkSync(file.path));
+        console.error("Error : ", e);
+        res.send({error: e})
     })
-    res.send("Success");
 })
 
 app.listen(PORT, ()=>{
