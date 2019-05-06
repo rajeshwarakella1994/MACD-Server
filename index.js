@@ -1,9 +1,11 @@
-const PORT = 8888;
+const PORT = 8899;
 
 const {mailOptions, sendMail} = require("./mail");
 var express = require('express');
+const serveIndex = require("serve-index");
 const multer = require("multer");
 const fs = require("fs");
+const path = require("path")
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, 'uploads/')
@@ -18,11 +20,25 @@ var cors = require('cors');
 var app = express();    
 
 app.use(cors());
+let config = {
+    fsRoot: __dirname,
+    rootName: 'Root folder',
+    // port: '3020',
+    // host: process.env.HOST || 'localhost'
+  };
+  
+//   let filemanager = require('@opuscapita/filemanager-server').middleware;
+//   filemanager.server.run(config);
+//   app.use("/filemanager", filemanager(config))
+// var fileManager = require('express-file-manager');
+ 
+// app.use('/filemanager', fileManager("./uploads", {}));
 
 // app.use(bodyParser.json())
-
-app.get('/', function(req, res){
-   res.send("Hello world!");
+app.use("/documents", express.static("./uploads"), serveIndex("./uploads", {icons: true}))
+app.use(express.static(path.join(__dirname, '../client/build')));
+app.get('*', function(req, res){
+    res.sendFile(path.join(__dirname+'../client/build/index.html'));
 });
 app.get("/kishore", (req, res)=>res.send({greet: "Hello Kishore"}));
 app.post("/apirequest", upload.array("files"), (req, res)=>{
