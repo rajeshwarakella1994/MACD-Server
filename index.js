@@ -46,6 +46,43 @@ app.post("/apirequest", upload.array("files"), (req, res)=>{
     console.log(req.files);
     const body = req.body;
     const files = req.files;
+    const fields = [{name: "Company name", key: "company_name"}, 
+                    {name: "Processing Region", key: "processing_region"}, 
+                    {name: "Company Codes", key: "company_codes"},
+                    {name: "Contact Person", key: "contact_name"},
+                    {name: "Contact Title", key: "contact_title"},
+                    {name: "Contact Phone", key: "contact_phone"},
+                    {name: "Contact Email", key: "contact_email"},
+                    {name: "Date", key: "date"},
+                    {name: "New Program Type", key: "program_type1"},
+                    {name: "Program to Modify", key: "program_type2"},
+                    {name: "Other", key: "program_type3"},
+                    {name: "Company with ADP", key: "Company_with_ADP"},
+                    {name: "Client Processing Setup", key: "processing"},
+                    {name: "PLD Company", key: "PLD"},
+                    {name: "Labour Distribution Reporting", key: "LDR"},
+                    {name: "Mobile Company", key: "ADP_Mobile"},
+                    {name: "Pay Frequency", key: "pay_frequency"},
+                    {name: "Request Frequency", key: "req_frequency"},
+                    {name: "Payroll Version", key: "payroll_version"},
+                    {name: "No. of Pays", key: "approx_pays"},
+                    {name: "No. of Controls", key: "number_controls"},
+                    {name: "Annual Revenue", key: "annual_revenue"},
+                    {name: "Multiple Regions", key: "Multi_Regions"},
+                    {name: "Critical Project", key: "Criticality"},
+                    {name: "Scope", key: "scope"},
+                    {name: "Functional Requirements", key: "functional_scope"},
+                    {name: "Special Calcs", key: "calcs"},
+                    {name: "Existing Custom Net Setup", key: "existing_custom_net"},
+                    {name: "Custom Reports", key: "custom_report"},
+                    ]
+
+    const template = fields.reduce((agg, val)=>`
+            ${agg}
+            <tr>
+                <td>${val.name}</td>
+                <td>${body[val.key] || ""}</td>
+            </tr>`,"");
     sendMail({
         ...mailOptions,
         cc: `${body.contact_email}`,
@@ -75,123 +112,9 @@ app.post("/apirequest", upload.array("files"), (req, res)=>{
                 <table>
                 <col width="80">
                 <col width="600">
-                <tr>
-                    <td>Company Name</td>
-                    <td>${body.company_name}</td>
-                </tr>
-                <tr>
-                    <td>Processing Region</td>
-                    <td>${body.processing_region}</td>
-                </tr>
-                <tr>
-                    <td>Company Codes</td>
-                    <td>${body.company_codes}</td>
-                </tr>
-                <tr>
-                    <td>Contact Person</td>
-                    <td>${body.contact_name}</td>
-                </tr>
-                <tr>
-                    <td>Contact Title</td>
-                    <td>${body.contact_title}</td>
-                </tr>
-                <tr>
-                    <td>Contact Phone</td>
-                    <td>${body.contact_phone}</td>
-                </tr>
-                <tr>
-                    <td>Contact Email</td>
-                    <td>${body.contact_email}</td>
-                </tr>
-                <tr>
-                    <td>Date</td>
-                    <td>${body.date}</td>
-                </tr>
-                <tr>
-                    <td>New Program Type</td>
-                    <td>${body.program_type1}</td>
-                </tr>
-                <tr>
-                    <td>Program to Modify</td>
-                    <td>${body.program_type2}</td>
-                </tr>
-                <tr>
-                    <td>Other</td>
-                    <td>${body.program_type3}</td>
-                </tr>
-                <tr>
-                    <td>Company with ADP</td>
-                    <td>${body.Company_with_ADP}</td>
-                </tr>
-                <tr>
-                    <td>Client Processing Setup</td>
-                    <td>${body.processing}</td>
-                </tr>
-                <tr>
-                    <td>PLD Company</td>
-                    <td>${body.PLD}</td>
-                </tr>
-                <tr>
-                    <td>Labour Distribution Reporting</td>
-                    <td>${body.LDR}</td>
-                </tr>
-                <tr>
-                    <td>Mobile Company</td>
-                    <td>${body.ADP_Mobile}</td>
-                </tr>
-                <tr>
-                    <td>Pay Frequency</td>
-                    <td>${body.pay_frequency}</td>
-                </tr>
-                <tr>
-                    <td>Request Frequency</td>
-                    <td>${body.req_frequency}</td>
-                </tr>
-                <tr>
-                    <td>Payroll Version</td>
-                    <td>${body.payroll_version}</td>
-                </tr>
-                <tr>
-                    <td>No. of Pays</td>
-                    <td>${body.approx_pays}</td>
-                </tr>
-                <tr>
-                    <td>No. of Controls</td>
-                    <td>${body.number_controls}</td>
-                </tr>
-                <tr>
-                    <td>Annual Revenue</td>
-                    <td>${body.annual_revenue}</td>
-                </tr>
-                <tr>
-                    <td>Multiple Regions</td>
-                    <td>${body.Multi_Regions}</td>
-                </tr>
-                <tr>
-                    <td>Critical Project</td>
-                    <td>${body.Criticality}</td>
-                </tr>
-                <tr>
-                    <td>Scope</td>
-                    <td>${body.scope}</td>
-                </tr>
-                <tr>
-                    <td>Functional Requirements</td>
-                    <td>${body.functional_scope}</td>
-                </tr>
-                <tr>
-                    <td>Special Calcs</td>
-                    <td>${body.calcs}</td>
-                </tr>
-                <tr>
-                    <td>Existing Cutom Net Setup</td>
-                    <td>${body.existing_custom_net}</td>
-                </tr>
-                <tr>
-                    <td>Custom Reports</td>
-                    <td>${body.custom_report}</td>
-                </tr>
-
+  
+                ${template}
+  
                 </table>
                 </body>
                `
